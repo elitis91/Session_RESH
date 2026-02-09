@@ -1,0 +1,139 @@
+openapi: 3.0.4
+info:
+  title: Simple CRUD Application
+  description: this is a simple specification for REST Application
+  version: 1.0.0
+
+tags:
+  - name: Books
+    description: books Api
+
+servers:
+  - url: http://localhost:8080
+    description: DEV SERVER
+
+paths:
+  /books:
+    get:
+      tags:
+        - Books
+      summary: Return resources
+      description: retourne la liste des livres en base
+      operationId: getBooks
+      responses:
+        '200':
+          description: liste de livres retournée avec succès.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
+        '500':
+          description: erreur de serveur
+    post:
+      tags:
+        - Books
+      summary: Create a single book
+      description: création d'un livre unique en base de données
+      operationId: addBook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
+      responses:
+        '201':
+          description: le livre a été créé avec succès
+        '500':
+          description: le serveur est indisponible
+
+  /books/{id}:
+    get:
+      tags:
+        - Books
+      summary: Get a book by ID
+      description: retourne un livre spécifique par son identifiant
+      operationId: getBookById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: livre trouvé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '404':
+          description: livre non trouvé
+        '500':
+          description: erreur de serveur
+
+    put:
+      tags:
+        - Books
+      summary: Update a book by ID
+      description: met à jour un livre existant
+      operationId: updateBook
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
+      responses:
+        '200':
+          description: livre mis à jour avec succès
+        '404':
+          description: livre non trouvé
+        '500':
+          description: erreur de serveur
+
+    delete:
+      tags:
+        - Books
+      summary: Delete a book by ID
+      description: supprime un livre existant
+      operationId: deleteBook
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: livre supprimé avec succès
+        '404':
+          description: livre non trouvé
+        '500':
+          description: erreur de serveur
+
+components:
+  schemas:
+    Book:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 10
+        title:
+          type: string
+          example: la maison du guet
+        author:
+          type: string
+          example: Mary Higgins Clark
+        published:
+          type: boolean
+          example: true
